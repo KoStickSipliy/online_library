@@ -1,13 +1,11 @@
 package org.example.cli.Get;
 
 import org.example.cli.Command;
-import org.example.service.DepartmentService;
-import org.example.service.DepartmentServiceImpl;
 
-public class GetAllDepartments implements Command {
+public class GetBook implements Command {
     // поле с сервисом
 
-    public GetAllDepartments() {
+    public GetBook() {
         //объявление сервиса
     }
 

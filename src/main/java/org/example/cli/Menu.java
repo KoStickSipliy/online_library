@@ -1,6 +1,6 @@
 package org.example.cli;
 
-import org.example.cli.Get.GetAllDepartments;
+import org.example.cli.Get.GetBook;
 import org.example.cli.Get.GetDepartmentById;
 
 import java.util.InputMismatchException;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Menu {
     private static Scanner scn = new Scanner(System.in);
     private static Command[] commands = new Command[]{
-            new GetAllDepartments(),
+            new GetBook(),
             new GetDepartmentById(),
     };
 

@@ -1,6 +1,6 @@
 package org.example.service;
 
-import org.example.entities.Author;
+import org.example.entities.Bookmark;
 
 import java.util.List;
 
@@ -23,19 +23,19 @@ public class DepartmentServiceImpl implements DepartmentService {
         return obj;
     }
 
-    private Author setInfoForNewDepartment(String[] parameters) {
+    private Bookmark setInfoForNewDepartment(String[] parameters) {
         //метод обработки входных данных и создания экземпляра сущности
         return null;
     }
 
     @Override
-    public Author getById(int id) {
+    public Bookmark getById(int id) {
         //обращение к репозиторию
         return null;
     }
 
     @Override
-    public List<Author> getAll() {
+    public List<Bookmark> getAll() {
         //обращение к репозиторию
         return null;
     }

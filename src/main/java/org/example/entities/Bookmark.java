@@ -5,11 +5,14 @@ package org.example.entities;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 //пример сущности
 @Data
 @Builder
-public class Book {
+public class Bookmark {
     private int id;
-    private String name;
-    private String path;
+    private int bookId;
+    private int page;
+    private LocalDate date;
 }
