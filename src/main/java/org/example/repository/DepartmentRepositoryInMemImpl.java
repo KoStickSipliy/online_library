@@ -1,8 +1,7 @@
 package org.example.repository;
 
-import org.example.entities.Department;
+import org.example.entities.Author;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentRepositoryInMemImpl implements DepartmentRepository {
@@ -24,13 +23,13 @@ public class DepartmentRepositoryInMemImpl implements DepartmentRepository {
     }
 
     @Override
-    public Department getDepartmentByName(String name) {
+    public Author getDepartmentByName(String name) {
         //логика обращения к полю, хранящему ваши объекты
         return null;
     }
 
     @Override
-    public void add(Department object) {
+    public void add(Author object) {
         //логика обращения к полю, хранящему ваши объекты
     }
 
@@ -40,19 +39,19 @@ public class DepartmentRepositoryInMemImpl implements DepartmentRepository {
     }
     
     @Override
-    public void update(int id, Department newObject) {
+    public void update(int id, Author newObject) {
         //логика обращения к полю, хранящему ваши объекты
     }
 
     @Override
-    public Department getById(int id) {
+    public Author getById(int id) {
         //логика обращения к полю, хранящему ваши объекты
         return null;
     }
 
 
     @Override
-    public List<Department> getAll() {
+    public List<Author> getAll() {
         //логика обращения к полю, хранящему ваши объекты
         return null;
     }

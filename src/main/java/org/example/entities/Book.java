@@ -1,14 +1,16 @@
 package org.example.entities;
 
 //пример сущности
-public class Department {
+public class Book {
     private int id;
     private String name;
-    public Department() {
+    private String path;
+    public Book() {
     }
-    public Department(int id, String name) {
+    public Book(int id, String name, String path) {
         this.id = id;
         this.name = name;
+        this.path = path;
     }
 
     public int getId() {
@@ -27,11 +29,20 @@ public class Department {
         this.name = name;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     @Override
     public String toString() {
-        return "\n Department{" +
+        return "\n Book{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name=" + name +
+                ", path=" + path + '\'' +
                 "} \n";
     }
 }

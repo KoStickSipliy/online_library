@@ -1,10 +1,7 @@
 package org.example.service;
 
-import org.example.entities.Department;
-import org.example.repository.DepartmentRepository;
-import org.example.repository.DepartmentRepositoryInMemImpl;
+import org.example.entities.Author;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class DepartmentServiceImpl implements DepartmentService {
@@ -26,19 +23,19 @@ public class DepartmentServiceImpl implements DepartmentService {
         return obj;
     }
 
-    private Department setInfoForNewDepartment(String[] parameters) {
+    private Author setInfoForNewDepartment(String[] parameters) {
         //метод обработки входных данных и создания экземпляра сущности
         return null;
     }
 
     @Override
-    public Department getById(int id) {
+    public Author getById(int id) {
         //обращение к репозиторию
         return null;
     }
 
     @Override
-    public List<Department> getAll() {
+    public List<Author> getAll() {
         //обращение к репозиторию
         return null;
     }

@@ -1,8 +1,8 @@
 package org.example.repository;
 
-import org.example.entities.Department;
+import org.example.entities.Author;
 
-public interface DepartmentRepository extends Repository<Department, Integer>{
-    Department getDepartmentByName(String name);
+public interface DepartmentRepository extends Repository<Author, Integer>{
+    Author getDepartmentByName(String name);
 
 }
