@@ -6,7 +6,7 @@ import org.example.entities.Bookmark;
 import java.util.Collection;
 import java.util.List;
 
-public interface BookService extends Service<Book, Integer> {
+public interface BookService extends Service<Book, Long> {
     List<Book> findAllById(List<Long> ids);
     List<Book> findByName (String name);
     List<Book> findByPath (String path);

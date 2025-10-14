@@ -5,7 +5,7 @@ import org.example.entities.Bookmark;
 
 import java.util.List;
 
-public interface BookmarkService extends Service{
+public interface BookmarkService extends Service<Bookmark, Long>{
     List<Bookmark> findBookmarksInBook(Book book);
     int findLastPage(Book book);
     Book findLastBook();
