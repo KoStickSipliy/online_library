@@ -3,7 +3,7 @@ package org.example.repository;
 import java.util.List;
 
 public interface Repository<T, Integer> {
-    void save(T object);
+    void create(T object);
     void deleteAll();
     void deleteById(int id);
     void update(int id, T newObject);

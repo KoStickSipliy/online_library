@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class Bookmark {
-    private int id;
+    private long id;
     private int bookId;
     private int page;
     private LocalDate date;
