@@ -31,6 +31,11 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
     }
 
     @Override
+    public List<Bookmark> findAllBookmarksInBook(long bookId) {
+        return null;
+    }
+
+    @Override
     public void deleteAllPreviousBookmarks(long bookId) {
 
     }

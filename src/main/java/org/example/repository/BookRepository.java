@@ -10,7 +10,6 @@ import java.util.Set;
 
 public interface BookRepository extends Repository<Book, Integer>{
     List<Book> findAllById(Collection<Integer> ids);
-    Book findByBookmarkId(long bookmarkId);
 }
 
 //COMPLETED

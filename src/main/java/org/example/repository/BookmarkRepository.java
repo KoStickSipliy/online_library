@@ -11,6 +11,7 @@ public interface BookmarkRepository extends Repository<Bookmark, Integer>{
     int findLastPage(long bookId);
     long findLastBookId();
     List<Long> findAllStartedBookIds();
+    List<Bookmark> findAllBookmarksInBook(long bookId);
     void deleteAllPreviousBookmarks(long bookId);
     void deleteAllBookmarks(long bookId);
 }

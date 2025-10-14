@@ -71,8 +71,4 @@ public class BookInMemoryRepository implements BookRepository {
         return booklist;
     } //*
 
-    @Override
-    public Book findByBookmarkId(long bookmarkId) {
-        return null;
-    }
 }
