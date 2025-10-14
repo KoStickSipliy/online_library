@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface BookRepository extends Repository<Book, Integer>{
-    List<Book> findAllById(Collection<Integer> ids);
+    List<Book> findAllById(Collection<Long> ids);
 }
 
 //COMPLETED

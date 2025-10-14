@@ -15,6 +15,10 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
 
     public BookmarkInMemoryRepository() {}
 
+    public static BookmarkRepository getInstance() {
+        return repo;
+    }
+
     @Override
     public int findLastPage(long bookId) {
         return 0;
@@ -59,12 +63,12 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         storage.remove(this.getById(id));
     }
 
     @Override
-    public void update(int id, Bookmark newObject) {
+    public void update(long id, Bookmark newObject) {
         for (int i =0; i<storage.size(); i++) {
             if (storage.get(i).getId() == newObject.getId()) {
                 storage.set(i, newObject);
@@ -74,7 +78,7 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
     }
 
     @Override
-    public Bookmark getById(int id) {
+    public Bookmark getById(long id) {
         Bookmark found = null;
         for (Bookmark bm : storage) {
             if (bm.getId() == id) {

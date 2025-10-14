@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface Service<T, Integer> {
     void create(T object);
-    T getById(int id);
+    T getById(long id);
     List<T> getAll();
-    void update(int id, T newObject);
+    void update(long id, T newObject);
     void deleteAll();
-    void deleteById(int id);
+    void deleteById(long id);
 }

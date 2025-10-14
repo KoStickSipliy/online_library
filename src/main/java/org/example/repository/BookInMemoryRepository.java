@@ -13,7 +13,11 @@ public class BookInMemoryRepository implements BookRepository {
     private final List<Book> storage = new ArrayList<>();
     private final Autoincrement idGenerator = new Autoincrement();
 
-    public BookInMemoryRepository() {}
+    private BookInMemoryRepository() {}
+
+    public static BookRepository getInstance() {
+        return repo;
+    }
 
     @Override
     public void create(Book object) {
@@ -29,12 +33,12 @@ public class BookInMemoryRepository implements BookRepository {
     } //*
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         storage.remove(this.getById(id));
     }
 
     @Override
-    public void update(int id, Book newObject) {
+    public void update(long id, Book newObject) {
         for (int i =0; i<storage.size(); i++) {
             if (storage.get(i).getId() == newObject.getId()) {
                 storage.set(i, newObject);
@@ -44,7 +48,7 @@ public class BookInMemoryRepository implements BookRepository {
     }//*
 
     @Override
-    public Book getById(int id) {
+    public Book getById(long id) {
         Book found = null;
         for (Book book : storage) {
             if (book.getId() == id) {
@@ -61,7 +65,7 @@ public class BookInMemoryRepository implements BookRepository {
     } //*
 
     @Override
-    public List<Book> findAllById(Collection<Integer> ids) {
+    public List<Book> findAllById(Collection<Long> ids) {
         List<Book> booklist = null;
         for (Book book : storage) {
             if (ids.contains(book.getId())){
