@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 public class Bookmark {
     private long id;
-    private int bookId;
+    private long bookId;
     private int page;
     private LocalDate date;
 }

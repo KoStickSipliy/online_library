@@ -4,14 +4,15 @@ import org.example.entities.Book;
 import org.example.entities.Bookmark;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public interface BookmarkRepository extends Repository<Bookmark, Integer>{
-    Book findLastBook();
-    int findLastPage(Book book);
-    Book findAllStartedBooks();
-    void deleteAllPreviousBookmarks(Book book);
-    void deleteAllBookmarks(Book book);
+    int findLastPage(long bookId);
+    long findLastBookId();
+    List<Long> findAllStartedBookIds();
+    void deleteAllPreviousBookmarks(long bookId);
+    void deleteAllBookmarks(long bookId);
 }
 
 //COMPLETED

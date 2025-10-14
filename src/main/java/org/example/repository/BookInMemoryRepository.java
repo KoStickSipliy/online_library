@@ -61,14 +61,18 @@ public class BookInMemoryRepository implements BookRepository {
     } //*
 
     @Override
-    public Set<Book> findAllById(Collection<Integer> ids) {
-        Set<Integer> idSet = Set.copyOf(ids);
-        Set<Book> booklist = null;
+    public List<Book> findAllById(Collection<Integer> ids) {
+        List<Book> booklist = null;
         for (Book book : storage) {
-            if (idSet.contains(book.getId())){
+            if (ids.contains(book.getId())){
                 booklist.add(book);
             }
         }
         return booklist;
     } //*
+
+    @Override
+    public Book findByBookmarkId(long bookmarkId) {
+        return null;
+    }
 }

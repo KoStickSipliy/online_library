@@ -7,6 +7,7 @@ import org.example.utils.Autoincrement;
 import java.util.ArrayList;
 import java.util.List;
 
+// LIMITED FUNCTIONALITY
 public class BookmarkInMemoryRepository implements BookmarkRepository{
     private static final BookmarkInMemoryRepository repo = new BookmarkInMemoryRepository();
     private final List<Bookmark> storage = new ArrayList<>();
@@ -15,27 +16,27 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
     public BookmarkInMemoryRepository() {}
 
     @Override
-    public Book findLastBook() {
-        return null;
-    }
-
-    @Override
-    public int findLastPage(Book book) {
+    public int findLastPage(long bookId) {
         return 0;
     }
 
     @Override
-    public Book findAllStartedBooks() {
+    public long findLastBookId() {
+        return 0;
+    }
+
+    @Override
+    public List<Long> findAllStartedBookIds() {
         return null;
     }
 
     @Override
-    public void deleteAllPreviousBookmarks(Book book) {
+    public void deleteAllPreviousBookmarks(long bookId) {
 
     }
 
     @Override
-    public void deleteAllBookmarks(Book book) {
+    public void deleteAllBookmarks(long bookId) {
 
     }
 

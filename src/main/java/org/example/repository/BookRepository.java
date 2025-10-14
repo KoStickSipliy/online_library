@@ -5,10 +5,12 @@ import org.example.entities.Bookmark;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public interface BookRepository extends Repository<Book, Integer>{
-    Set<Book> findAllById(Collection<Integer> ids);
+    List<Book> findAllById(Collection<Integer> ids);
+    Book findByBookmarkId(long bookmarkId);
 }
 
 //COMPLETED
