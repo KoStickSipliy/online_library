@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public interface BookRepository extends Repository<Bookmark, Integer>{
+public interface BookRepository extends Repository<Book, Integer>{
     Set<Book> findAllById(Collection<Integer> ids);
 }
 
