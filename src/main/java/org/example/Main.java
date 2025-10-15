@@ -5,4 +5,4 @@ public class Main {
         new Menu().run();
     }
 }
-//mvn exec:java -Dexec.mainClass="src.main.java.org.example.Main"
+//java -jar .\target\online_library-1.0-SNAPSHOT.jar

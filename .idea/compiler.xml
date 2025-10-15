@@ -7,8 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="javaExample" />
+        <module name="online_library" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="javaExample" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
