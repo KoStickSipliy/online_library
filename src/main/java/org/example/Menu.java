@@ -1,5 +1,6 @@
-package org.example.cli;
+package org.example;
 
+import org.example.cli.Command;
 import org.example.cli.Get.GetBook;
 import org.example.cli.Get.GetDepartmentById;
 
