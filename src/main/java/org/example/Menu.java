@@ -1,46 +1,63 @@
 package org.example;
 
-import org.example.cli.Command;
-import org.example.cli.Get.GetBook;
-import org.example.cli.Get.GetDepartmentById;
+import org.example.IO.IO;
+import org.example.cli.*;
 
 import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
+
 
 public class Menu {
-    private static Scanner scn = new Scanner(System.in);
-    private static Command[] commands = new Command[]{
-            new GetBook(),
-            new GetDepartmentById(),
-    };
 
-    public static void run(){
-        while (true){
-            System.out.println();
-            for (int i = 1; i <= commands.length; i++) {
-                System.out.println(i + " " + commands[i - 1].getCommandName());
-            }
-            int inputCommand = 0;
-            try {
-                inputCommand = scn.nextInt();
-            } catch (InputMismatchException ime){
-                System.out.println("wrong command");
-                continue;
-            }
+    private static final List<Command> commandsList = List.of(
+            new CreateBookCommand(),
+            new CreateBookmarkCommand(),
+            new DeleteBookCommand(),
+            new DeleteBookmarkCommand(),
+            new EditBookCommand(),
+            new EditBookmarkCommand(),
+            new GetAllBooksCommand(),
+            new ExitCommand()
+    );
 
-            if(inputCommand == -1){
-                System.out.println("Program exit");
-                return;
-            }
+    private final Map<Integer, Command> commandsMap;
 
-            if(inputCommand > commands.length){
-                System.out.println("Wrong command");
-                continue;
-            }
-
-            commands[inputCommand - 1].execute();
-
+    public Menu() {
+        commandsMap = new HashMap<>();
+        for (int i = 0; i < commandsList.size(); i++) {
+            commandsMap.put(i + 1, commandsList.get(i));
         }
+    }
 
+    public void run() {
+        while (true) {
+            printAllCommands();
+            Integer command = chooseCommand();
+            if (command == null) {
+                continue;
+            }
+            commandsMap.get(command).execute();
+            IO.printEmptyLine();
+        }
+    }
+
+    private void printAllCommands() {
+        commandsMap.forEach((number, command) -> {
+            IO.print("%d) %s".formatted(number, command.getCommandName()));
+        });
+    }
+
+    private Integer chooseCommand() {
+        try {
+            Integer input = Integer.parseInt(IO.readLine("Choose command:"));
+            if (!commandsMap.containsKey(input)) {
+                IO.printError("No such command");
+                return null;
+            }
+            return input;
+        } catch (NumberFormatException e) {
+            IO.printError("Wrong input format");
+        }
+        return null;
     }
 }
