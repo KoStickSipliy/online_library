@@ -17,6 +17,7 @@ public class Menu {
             new EditBookCommand(),
             new EditBookmarkCommand(),
             new GetAllBooksCommand(),
+            new GetAllBookmarksCommand(),
             new ExitCommand()
     );
 
