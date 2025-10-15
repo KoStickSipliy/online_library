@@ -14,34 +14,30 @@ public class BookmarkServiceImpl implements BookmarkService {
     private final BookRepository bookRepo = BookInMemoryRepository.getInstance();;
     private final BookmarkRepository bookmarkRepo = BookmarkInMemoryRepository.getInstance();
 
+    public static BookmarkService getInstance() {
+        if (obj == null) {
+            obj = new BookmarkServiceImpl();
+        }
+        return obj;
+    }
     @Override
-    public List<Bookmark> findBookmarksInBook(Book book) {
-        return null;
+    public List<Bookmark> findAllBookmarksInBook(Book book) {
+        return bookmarkRepo.findAllBookmarksInBook(book.getId());
+    }
+
+    @Override
+    public Bookmark findLastBookmarkInBook(Book book) {
+        return bookmarkRepo.findLastBookmarkInBook(book.getId());
     }
 
     @Override
     public int findLastPage(Book book) {
-        return 0;
-    }
-
-    @Override
-    public Book findLastBook() {
-        return null;
-    }
-
-    @Override
-    public List<Book> findAllStartedBooks() {
-        return null;
+        return bookmarkRepo.findLastPageInBook(book.getId());
     }
 
     @Override
     public void deleteAllPreviousBookmarks(Book book) {
-
-    }
-
-    @Override
-    public void deleteAllBookmarks(Book book) {
-
+        bookmarkRepo.deleteAllPreviousBookmarks(book.getId());
     }
 
     @Override
@@ -51,26 +47,26 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public Bookmark getById(long id) {
-        return null;
+        return bookmarkRepo.getById(id);
     }
 
     @Override
     public List<Bookmark> getAll() {
-        return null;
+        return bookmarkRepo.getAll();
     }
 
     @Override
     public void update(long id, Bookmark newObject) {
-
+        bookmarkRepo.update(id, newObject);
     }
 
     @Override
     public void deleteAll() {
-
+        bookmarkRepo.deleteAll();
     }
 
     @Override
     public void deleteById(long id) {
-
+        bookmarkRepo.deleteById(id);
     }
 }

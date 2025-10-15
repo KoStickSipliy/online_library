@@ -14,4 +14,5 @@ public interface BookService extends Service<Book, Long> {
     Book findLastBook ();
     Book findByBookmark(Bookmark bookmark);
 
+
 }

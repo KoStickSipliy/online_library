@@ -8,13 +8,21 @@ import org.example.repository.BookRepository;
 import org.example.repository.BookmarkInMemoryRepository;
 import org.example.repository.BookmarkRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BookServiceImpl implements BookService {
     private static BookService obj;
-    private final BookRepository bookRepo = BookInMemoryRepository.getInstance();;
+    private final BookRepository bookRepo = BookInMemoryRepository.getInstance();
     private final BookmarkRepository bookmarkRepo = BookmarkInMemoryRepository.getInstance();
 
+    public static BookService getInstance() {
+        if (obj == null) {
+            obj = new BookServiceImpl();
+        }
+        return obj;
+    }
     @Override
     public List<Book> findAllById(List<Long> ids) {
         return bookRepo.findAllById(ids);
@@ -39,14 +47,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findAllStartedBooks() {
-        IO.printError("findAllSupportedBooks is not supported");
-        return null;
+        List<Long> bookIds = bookmarkRepo.findAllStartedBookIds();
+        return bookRepo.findAllById(bookIds);
     }
 
     @Override
     public Book findLastBook() {
-        IO.printError("findLastBook is not supported");
-        return null;
+        long lastId = bookmarkRepo.findLastBookId();
+        return bookRepo.getById(lastId);
     }
 
     @Override

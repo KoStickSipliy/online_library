@@ -6,11 +6,8 @@ import org.example.entities.Bookmark;
 import java.util.List;
 
 public interface BookmarkService extends Service<Bookmark, Long>{
-    List<Bookmark> findBookmarksInBook(Book book);
+    List<Bookmark> findAllBookmarksInBook(Book book);
+    Bookmark findLastBookmarkInBook(Book book);
     int findLastPage(Book book);
-    Book findLastBook();
-    List<Book> findAllStartedBooks();
-
     void deleteAllPreviousBookmarks(Book book);
-    void deleteAllBookmarks(Book book);
 }
