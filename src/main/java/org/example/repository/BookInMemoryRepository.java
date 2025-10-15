@@ -6,7 +6,6 @@ import org.example.utils.Autoincrement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class BookInMemoryRepository implements BookRepository {
     private static final BookInMemoryRepository repo = new BookInMemoryRepository();

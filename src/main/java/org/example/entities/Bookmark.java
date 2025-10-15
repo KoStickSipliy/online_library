@@ -9,7 +9,6 @@ import java.time.LocalDate;
 
 //пример сущности
 @Data
-@Builder
 public class Bookmark {
     private long id;
     private long bookId;

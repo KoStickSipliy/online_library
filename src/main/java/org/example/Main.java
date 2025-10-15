@@ -5,3 +5,4 @@ public class Main {
         new Menu().run();
     }
 }
+//mvn exec:java -Dexec.mainClass="src.main.java.org.example.Main"

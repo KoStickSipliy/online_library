@@ -2,10 +2,7 @@ package org.example.cli;
 
 import org.example.IO.IO;
 import org.example.entities.Bookmark;
-import org.example.service.BookServiceImpl;
 import org.example.service.BookmarkServiceImpl;
-
-import java.time.LocalDate;
 
 public class CreateBookmarkCommand implements Command{
     @Override

@@ -1,11 +1,11 @@
 package org.example.service;
 
 import org.example.entities.Book;
-import org.example.entities.Bookmark;
 import org.example.repository.BookInMemoryRepository;
+import org.example.repository.BookmarkRepository;
+import org.example.entities.Bookmark;
 import org.example.repository.BookRepository;
 import org.example.repository.BookmarkInMemoryRepository;
-import org.example.repository.BookmarkRepository;
 
 import java.util.List;
 
