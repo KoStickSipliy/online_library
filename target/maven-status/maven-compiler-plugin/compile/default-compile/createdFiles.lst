@@ -13,6 +13,7 @@ org\example\service\BookService.class
 org\example\cli\CreateBookmarkCommand.class
 org\example\repository\BookmarkRepository.class
 org\example\service\Service.class
+org\example\Exception\NoEntityException.class
 org\example\cli\GetAllBooksCommand.class
 org\example\cli\EditBookmarkCommand.class
 org\example\cli\CreateBookCommand.class

@@ -18,7 +18,7 @@ public class GetAllBookmarksCommand implements Command{
     public void execute() {
         List<Bookmark> bms = BookmarkServiceImpl.getInstance().getAll();
         if (bms.isEmpty()) {
-            IO.print("No books found");
+            IO.print("No bookmarks found");
             return;
         }
         bms.forEach(bm -> {
