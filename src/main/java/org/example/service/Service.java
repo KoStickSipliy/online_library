@@ -3,8 +3,10 @@ package org.example.service;
 import java.util.List;
 
 public interface Service<T, Integer> {
-    T getById(int id);
+    void create(T object);
+    T getById(long id);
     List<T> getAll();
-
-    //какие методы должны реализовывать сервисы придумаете сами
+    void update(long id, T newObject);
+    void deleteAll();
+    void deleteById(long id);
 }
