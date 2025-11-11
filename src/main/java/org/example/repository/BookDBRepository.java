@@ -2,6 +2,7 @@ package org.example.repository;
 
 import lombok.Getter;
 import org.example.DBManager.PostgreSQLManager;
+import org.example.Exception.NoEntityException;
 import org.example.IO.IO;
 import org.example.entities.Book;
 
@@ -49,32 +50,73 @@ public class BookDBRepository implements BookRepository {
 
     @Override
     public void create(Book object) {
-
+        try {
+            createStatement.setString(1, object.getName());
+            createStatement.setString(2, object.getPath());
+            createStatement.executeUpdate();
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+        }
     }
 
     @Override
     public void deleteAll() {
-
+        try {
+            statement.executeUpdate("DELETE FROM book");
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+        }
     }
 
     @Override
     public void deleteById(long id) {
-
+        try {
+            deleteByIdStatement.setLong(1, id);
+            int deletedRows = deleteByIdStatement.executeUpdate();
+            if (deletedRows == 0) {
+//                IO.printError(("Book delete exception: no entity (id: %d)").formatted(id));
+                throw new NoEntityException("Book", String.valueOf(id));
+            }
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+        }
     }
 
     @Override
     public void update(long id, Book newObject) {
-
+        try {
+            updateStatement.setString(1, newObject.getName());
+            updateStatement.setString(2, newObject.getPath());
+            updateStatement.setLong(3, id);
+            int updatedRows = updateStatement.executeUpdate();
+            if (updatedRows == 0) {
+                throw new NoEntityException("Book", String.valueOf(id));
+            }
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+        }
     }
 
     @Override
-    public Book getById(long id) {
-        return null;
+    public Book getById(long id) throws SQLException {
+        getByIdStatement.setLong(1, id);
+        try (ResultSet result = getByIdStatement.executeQuery()) {
+            List<Book> bookResultSet = extractBook(result);
+            if (bookResultSet.isEmpty()) {
+                throw new NoEntityException("Book", String.valueOf(id));
+            }
+            return bookResultSet.iterator().next();
+        }
     }
 
     @Override
     public List<Book> getAll() {
-        return null;
+        try (ResultSet result = statement.executeQuery("SELECT * FROM book")) {
+            return extractBook(result);
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+            return List.of();
+        }
     }
 
     private List <Book> extractBook(ResultSet result) {

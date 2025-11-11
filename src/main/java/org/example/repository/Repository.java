@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface Repository<T, Integer> {
@@ -7,6 +8,6 @@ public interface Repository<T, Integer> {
     void deleteAll();
     void deleteById(long id);
     void update(long id, T newObject);
-    T getById(long id);
+    T getById(long id) throws SQLException;
     List<T> getAll();
 }
