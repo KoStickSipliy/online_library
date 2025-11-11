@@ -6,6 +6,7 @@ import org.example.IO.IO;
 import org.example.entities.Book;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,7 +35,16 @@ public class BookDBRepository implements BookRepository {
     }
     @Override
     public List<Book> findAllById(Collection<Long> ids) {
-        return null;
+        String stringIds = String.join(",", ids.stream().map(String::valueOf).toArray(String[]::new));
+        if (stringIds.isEmpty()) {return List.of();}
+
+        try (ResultSet result = statement.executeQuery(
+                ("SELECT * FROM book where id IN (%s)").formatted(stringIds)
+        )) { return extractBook(result);
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+            return List.of();
+        }
     }
 
     @Override
@@ -65,5 +75,21 @@ public class BookDBRepository implements BookRepository {
     @Override
     public List<Book> getAll() {
         return null;
+    }
+
+    private List <Book> extractBook(ResultSet result) {
+        List <Book> bookList = new ArrayList<>();
+        try {
+            while (result.next()) {
+                bookList.add(new Book(
+                        result.getString("name"),
+                        result.getString("path")
+                ));
+            }
+        } catch (SQLException e) {
+            IO.printError("Exception while extracting books" + e.getMessage());
+        } finally {
+            return bookList;
+        }
     }
 }
