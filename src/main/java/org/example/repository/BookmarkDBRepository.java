@@ -26,7 +26,6 @@ public class BookmarkDBRepository implements BookmarkRepository {
     private PreparedStatement deleteAllPreviousBookmarksStatement;
     private PreparedStatement findAllBookmarksInBookStatement;
 
-
     private BookmarkDBRepository () {
         Connection connection = PostgreSQLManager.getInstance().getConnection();
 
@@ -34,7 +33,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             statement = connection.createStatement();
             createStatement = connection.prepareStatement("INSERT INTO bookmark (bookId, page) VALUES (?, ?)");
             deleteByIdStatement = connection.prepareStatement("DELETE FROM bookmark WHERE id = ?");
-            updateStatement = connection.prepareStatement("UPDATE bookmark SET bookId = ?, pages = ? WHERE id = ?");
+            updateStatement = connection.prepareStatement("UPDATE bookmark SET bookId = ?, page = ?, date = ? WHERE id = ?");
             getByIdStatement = connection.prepareStatement("SELECT * FROM bookmark WHERE id = ?");
 
             findLastBookmarkInBookStatement = connection.prepareStatement(

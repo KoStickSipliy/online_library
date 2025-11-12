@@ -2,18 +2,16 @@ package org.example.service;
 
 import org.example.IO.IO;
 import org.example.entities.Book;
-import org.example.repository.BookInMemoryRepository;
-import org.example.repository.BookmarkInMemoryRepository;
-import org.example.repository.BookmarkRepository;
+import org.example.repository.*;
 import org.example.entities.Bookmark;
-import org.example.repository.BookRepository;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
     private static BookService obj;
-    private final BookRepository bookRepo = BookInMemoryRepository.getInstance();
-    private final BookmarkRepository bookmarkRepo = BookmarkInMemoryRepository.getInstance();
+    private final BookRepository bookRepo = BookDBRepository.getInstance();
+    private final BookmarkRepository bookmarkRepo = BookmarkDBRepository.getInstance();
 
     public static BookService getInstance() {
         if (obj == null) {
@@ -51,13 +49,24 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findLastBook() {
-        long lastId = bookmarkRepo.findLastReadBookId();
-        return bookRepo.getById(lastId);
+        try {
+            long lastId = bookmarkRepo.findLastReadBookId();
+            return bookRepo.getById(lastId);
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+            return null;
+        }
+
     }
 
     @Override
     public Book findByBookmark(Bookmark bookmark) {
-        return bookRepo.getById(bookmark.getBookId());
+        try {
+            return bookRepo.getById(bookmark.getBookId());
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -67,7 +76,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getById(long id) {
-        return bookRepo.getById(id);
+        try {
+            return bookRepo.getById(id);
+        } catch (SQLException e) {
+            IO.printError(e.getMessage());
+            return null;
+        }
     }
 
     @Override
