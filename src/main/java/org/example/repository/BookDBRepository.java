@@ -119,19 +119,14 @@ public class BookDBRepository implements BookRepository {
         }
     }
 
-    private List <Book> extractBook(ResultSet result) {
-        List <Book> bookList = new ArrayList<>();
-        try {
-            while (result.next()) {
-                bookList.add(new Book(
-                        result.getString("name"),
-                        result.getString("path")
-                ));
-            }
-        } catch (SQLException e) {
-            IO.printError("Exception while extracting books" + e.getMessage());
-        } finally {
-            return bookList;
+    private List<Book> extractBook(ResultSet result) throws SQLException {
+        List<Book> bookList = new ArrayList<>();
+        while (result.next()) {
+            bookList.add(new Book(
+                    result.getString("name"),
+                    result.getString("path")
+            ));
         }
+        return bookList;
     }
 }

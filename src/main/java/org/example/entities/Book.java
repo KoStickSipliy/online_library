@@ -15,4 +15,9 @@ public class Book {
         this.name = name;
         this.path = path;
     }
+    public Book (long id, String name, String path){
+        this.id = id;
+        this.name = name;
+        this.path = path;
+    }
 }

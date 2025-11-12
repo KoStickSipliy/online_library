@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book findLastBook() {
-        long lastId = bookmarkRepo.findLastBookId();
+        long lastId = bookmarkRepo.findLastReadBookId();
         return bookRepo.getById(lastId);
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 public interface BookmarkRepository extends Repository<Bookmark, Integer>{
     Bookmark findLastBookmarkInBook(long bookId);
     int findLastPageInBook(long bookId);
-    long findLastBookId();
+    long findLastReadBookId();
     List<Long> findAllStartedBookIds();
     List<Bookmark> findAllBookmarksInBook(long bookId);
 

@@ -43,7 +43,7 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
     }
 
     @Override
-    public long findLastBookId() {
+    public long findLastReadBookId() {
         LocalDate lastDate = LocalDate.of(Year.MIN_VALUE, 1, 1);
         int iMax = -1;
         for (int  i = 0; i<storage.size(); i++) {
