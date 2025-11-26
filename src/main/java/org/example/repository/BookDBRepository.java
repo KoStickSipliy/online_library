@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class BookDBRepository implements BookRepository {
-    @Getter
+    @Getter(lazy = true)
     private static final BookDBRepository instance = new BookDBRepository();
 
     private Statement statement;
@@ -32,6 +32,7 @@ public class BookDBRepository implements BookRepository {
             getByIdStatement = connection.prepareStatement("SELECT * FROM book WHERE id = ?");
         } catch (SQLException e) {
             IO.printError("Exception while preparing statements: " + e.getMessage());
+            throw new RuntimeException("Failed to prepare BookDBRepository statements", e);
         }
     }
     @Override
@@ -44,7 +45,7 @@ public class BookDBRepository implements BookRepository {
         )) { return extractBook(result);
         } catch (SQLException e) {
             IO.printError(e.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to find books by ids", e);
         }
     }
 
@@ -56,6 +57,7 @@ public class BookDBRepository implements BookRepository {
             createStatement.executeUpdate();
         } catch (SQLException e) {
             IO.printError(e.getMessage());
+            throw new RuntimeException("Failed to create book", e);
         }
     }
 
@@ -65,6 +67,7 @@ public class BookDBRepository implements BookRepository {
             statement.executeUpdate("DELETE FROM book");
         } catch (SQLException e) {
             IO.printError(e.getMessage());
+            throw new RuntimeException("Failed to delete all books", e);
         }
     }
 
@@ -79,6 +82,7 @@ public class BookDBRepository implements BookRepository {
             }
         } catch (SQLException e) {
             IO.printError(e.getMessage());
+            throw new RuntimeException("Failed to delete book by id " + id, e);
         }
     }
 
@@ -94,18 +98,24 @@ public class BookDBRepository implements BookRepository {
             }
         } catch (SQLException e) {
             IO.printError(e.getMessage());
+            throw new RuntimeException("Failed to update book " + id, e);
         }
     }
 
     @Override
-    public Book getById(long id) throws SQLException {
-        getByIdStatement.setLong(1, id);
-        try (ResultSet result = getByIdStatement.executeQuery()) {
-            List<Book> bookResultSet = extractBook(result);
-            if (bookResultSet.isEmpty()) {
-                throw new NoEntityException("Book", String.valueOf(id));
+    public Book getById(long id) {
+        try {
+            getByIdStatement.setLong(1, id);
+            try (ResultSet result = getByIdStatement.executeQuery()) {
+                List<Book> bookResultSet = extractBook(result);
+                if (bookResultSet.isEmpty()) {
+                    throw new NoEntityException("Book", String.valueOf(id));
+                }
+                return bookResultSet.iterator().next();
             }
-            return bookResultSet.iterator().next();
+        } catch (SQLException e) {
+            IO.printError("Error getting book by id " + id + ": " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -115,7 +125,7 @@ public class BookDBRepository implements BookRepository {
             return extractBook(result);
         } catch (SQLException e) {
             IO.printError(e.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to get all books", e);
         }
     }
 
@@ -123,6 +133,7 @@ public class BookDBRepository implements BookRepository {
         List<Book> bookList = new ArrayList<>();
         while (result.next()) {
             bookList.add(new Book(
+                    result.getLong("id"),
                     result.getString("name"),
                     result.getString("path")
             ));

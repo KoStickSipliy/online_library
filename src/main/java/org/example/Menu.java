@@ -1,7 +1,6 @@
 package org.example;
 
-import org.example.IO.IO;
-import org.example.cli.*;
+import org.example.IO.*;
 import org.example.cli.*;
 
 import java.util.*;
@@ -18,6 +17,8 @@ public class Menu {
             new EditBookmarkCommand(),
             new GetAllBooksCommand(),
             new GetAllBookmarksCommand(),
+            new FindLastPageCommand(),
+            new DeleteAllPreviousBookmarksCommand(),
             new ExitCommand()
     );
 

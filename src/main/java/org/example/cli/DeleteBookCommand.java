@@ -11,8 +11,16 @@ public class DeleteBookCommand implements Command{
 
     @Override
     public void execute() {
-        long bookId = Long.parseLong(IO.readLine("Input book ID:"));
-        BookServiceImpl.getInstance().deleteById(bookId);
-        IO.print("Book was successfully deleted");
+        Long bookId = IO.readLongSafe("Input book ID:");
+        if (bookId == null) {
+            IO.printError("Invalid book ID");
+            return;
+        }
+        try {
+            BookServiceImpl.getInstance().deleteById(bookId);
+            IO.print("Book was successfully deleted");
+        } catch (RuntimeException e) {
+            IO.printError("Failed to delete book: " + e.getMessage());
+        }
     }
 }

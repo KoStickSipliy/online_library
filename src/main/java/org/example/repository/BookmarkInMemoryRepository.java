@@ -34,16 +34,20 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
                     iMax = i;
                 }
             }
-        } return storage.get(iMax);
+        }
+        if (iMax == -1) return null;
+        return storage.get(iMax);
     }
 
     @Override
     public int findLastPageInBook(long bookId) {
-        return findLastBookmarkInBook(bookId).getPage();
+        Bookmark last = findLastBookmarkInBook(bookId);
+        return last == null ? 0 : last.getPage();
     }
 
     @Override
     public long findLastReadBookId() {
+        if (storage.isEmpty()) return 0;
         LocalDate lastDate = LocalDate.of(Year.MIN_VALUE, 1, 1);
         int iMax = -1;
         for (int  i = 0; i<storage.size(); i++) {
@@ -51,7 +55,9 @@ public class BookmarkInMemoryRepository implements BookmarkRepository{
                 lastDate = storage.get(i).getDate();
                 iMax = i;
             }
-        } return storage.get(iMax).getBookId();
+        }
+        if (iMax == -1) return 0;
+        return storage.get(iMax).getBookId();
     }
 
     @Override

@@ -14,17 +14,21 @@ public class GetAllBooksCommand implements Command{
 
     @Override
     public void execute() {
-        List<Book> books = BookServiceImpl.getInstance().getAll();
-        if (books.isEmpty()) {
-            IO.print("No books found");
-            return;
+        try {
+            List<Book> books = BookServiceImpl.getInstance().getAll();
+            if (books.isEmpty()) {
+                IO.print("No books found");
+                return;
+            }
+            books.forEach(book -> {
+                IO.print("%d. %s (%s)".formatted(
+                        book.getId(),
+                        book.getName(),
+                        book.getPath()
+                ));
+            });
+        } catch (RuntimeException e) {
+            IO.printError("Failed to get books: " + e.getMessage());
         }
-        books.forEach(book -> {
-            IO.print("%d. %s (%s)".formatted(
-                    book.getId(),
-                    book.getName(),
-                    book.getPath()
-            ));
-        });
     }
 }

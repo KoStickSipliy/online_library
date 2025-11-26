@@ -39,7 +39,8 @@ public class BookInMemoryRepository implements BookRepository {
     @Override
     public void update(long id, Book newObject) {
         for (int i =0; i<storage.size(); i++) {
-            if (storage.get(i).getId() == newObject.getId()) {
+            if (storage.get(i).getId() == id) {
+                newObject.setId(id);
                 storage.set(i, newObject);
                 return;
             }
@@ -65,7 +66,7 @@ public class BookInMemoryRepository implements BookRepository {
 
     @Override
     public List<Book> findAllById(Collection<Long> ids) {
-        List<Book> booklist = null;
+        List<Book> booklist = new ArrayList<>();
         for (Book book : storage) {
             if (ids.contains(book.getId())){
                 booklist.add(book);

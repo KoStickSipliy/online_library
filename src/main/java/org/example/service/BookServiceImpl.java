@@ -5,7 +5,6 @@ import org.example.entities.Book;
 import org.example.repository.*;
 import org.example.entities.Bookmark;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
@@ -26,19 +25,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> findByName(String name) {
-        List<Book> books = null;
-        for (Book book : books) {
-            if (book.getName().equals(name)){
-                books.add(book);
+        List<Book> all = bookRepo.getAll();
+        List<Book> found = new java.util.ArrayList<>();
+        for (Book book : all) {
+            if (book.getName() != null && book.getName().equals(name)){
+                found.add(book);
             }
         }
-        return books;
+        return found;
     }
 
     @Override
     public List<Book> findByPath(String path) {
-        IO.printError("findByBath is not supported");
-        return null;
+        IO.printError("findByPath is not supported");
+        return List.of();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class BookServiceImpl implements BookService {
         try {
             long lastId = bookmarkRepo.findLastReadBookId();
             return bookRepo.getById(lastId);
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             IO.printError(e.getMessage());
             return null;
         }
@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService {
     public Book findByBookmark(Bookmark bookmark) {
         try {
             return bookRepo.getById(bookmark.getBookId());
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             IO.printError(e.getMessage());
             return null;
         }
@@ -78,7 +78,7 @@ public class BookServiceImpl implements BookService {
     public Book getById(long id) {
         try {
             return bookRepo.getById(id);
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             IO.printError(e.getMessage());
             return null;
         }

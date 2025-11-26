@@ -6,7 +6,6 @@ import org.example.entities.Book;
 import org.example.repository.*;
 import org.example.entities.Bookmark;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class BookmarkServiceImpl implements BookmarkService {
@@ -72,13 +71,13 @@ public class BookmarkServiceImpl implements BookmarkService {
     @Override
     public void create(Bookmark object) {
         try {
-            Book book = bookRepo.getById(object.getBookId());
+            bookRepo.getById(object.getBookId());
             bookmarkRepo.create(object);
         } catch (NoEntityException e) {
             String errorMsg = "Cannot create bookmark: book with id " + object.getBookId() + " does not exist";
             IO.printError(errorMsg);
             throw new IllegalArgumentException(errorMsg, e);
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
             String errorMsg = "Error checking book existence: " + e.getMessage();
             IO.printError(errorMsg);
             throw new RuntimeException("Database error while checking book existence", e);

@@ -2,33 +2,24 @@ package org.example.cli;
 
 import org.example.IO.IO;
 import org.example.entities.Book;
-import org.example.entities.Bookmark;
 import org.example.service.BookServiceImpl;
 import org.example.service.BookmarkServiceImpl;
 
-public class CreateBookmarkCommand implements Command{
+public class FindLastPageCommand implements Command {
     @Override
     public String getCommandName() {
-        return "Add new bookmark";
+        return "Find last page in book";
     }
 
     @Override
     public void execute() {
         String bookIdInput = IO.readLine("Input book ID:");
-        String pageInput = IO.readLine("Input page:");
 
         long bookId;
-        int page;
         try {
             bookId = Long.parseLong(bookIdInput.trim());
         } catch (Exception e) {
             IO.printError("Invalid book ID");
-            return;
-        }
-        try {
-            page = Integer.parseInt(pageInput.trim());
-        } catch (Exception e) {
-            IO.printError("Invalid page number");
             return;
         }
 
@@ -40,10 +31,10 @@ public class CreateBookmarkCommand implements Command{
             }
 
             try {
-                BookmarkServiceImpl.getInstance().create(new Bookmark(bookId, page));
-                IO.print("Bookmark was successfully added");
-            } catch (IllegalArgumentException ex) {
-                IO.print("This book does not exist");
+                int lastPage = BookmarkServiceImpl.getInstance().findLastPage(book);
+                IO.print("Last page with bookmark: " + lastPage);
+            } catch (RuntimeException ex) {
+                IO.printError("Failed to find last page: " + ex.getMessage());
             }
         } catch (RuntimeException e) {
             IO.printError("Error while checking book existence: " + e.getMessage());

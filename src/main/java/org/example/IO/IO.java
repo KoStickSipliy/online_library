@@ -10,6 +10,28 @@ public class IO {
         return scanner.nextLine();
     }
 
+    public static Long readLongSafe(String message) {
+        System.out.println(message);
+        String s = scanner.nextLine();
+        if (s == null || s.isBlank()) return null;
+        try {
+            return Long.parseLong(s.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static Integer readIntSafe(String message) {
+        System.out.println(message);
+        String s = scanner.nextLine();
+        if (s == null || s.isBlank()) return null;
+        try {
+            return Integer.parseInt(s.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     public static void print(String message) {
         System.out.println(message);
     }

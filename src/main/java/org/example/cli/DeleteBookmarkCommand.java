@@ -11,8 +11,16 @@ public class DeleteBookmarkCommand implements Command{
 
     @Override
     public void execute() {
-        long bookmarkId = Long.parseLong(IO.readLine("Input bookmark ID:"));
-        BookmarkServiceImpl.getInstance().deleteById(bookmarkId);
-        IO.print("Bookmark was successfully deleted");
+        Long bookmarkId = IO.readLongSafe("Input bookmark ID:");
+        if (bookmarkId == null) {
+            IO.printError("Invalid bookmark ID");
+            return;
+        }
+        try {
+            BookmarkServiceImpl.getInstance().deleteById(bookmarkId);
+            IO.print("Bookmark was successfully deleted");
+        } catch (RuntimeException e) {
+            IO.printError("Failed to delete bookmark: " + e.getMessage());
+        }
     }
 }

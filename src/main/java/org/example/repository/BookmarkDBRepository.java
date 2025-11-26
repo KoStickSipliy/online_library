@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class BookmarkDBRepository implements BookmarkRepository {
-    @Getter
+    @Getter(lazy = true)
     private static final BookmarkDBRepository instance = new BookmarkDBRepository();
 
     private Statement statement;
@@ -31,26 +31,27 @@ public class BookmarkDBRepository implements BookmarkRepository {
 
         try {
             statement = connection.createStatement();
-            createStatement = connection.prepareStatement("INSERT INTO bookmark (bookId, page) VALUES (?, ?)");
+            createStatement = connection.prepareStatement("INSERT INTO bookmark (book_id, page, date) VALUES (?, ?, ?)");
             deleteByIdStatement = connection.prepareStatement("DELETE FROM bookmark WHERE id = ?");
-            updateStatement = connection.prepareStatement("UPDATE bookmark SET bookId = ?, page = ?, date = ? WHERE id = ?");
+            updateStatement = connection.prepareStatement("UPDATE bookmark SET book_id = ?, page = ?, date = ? WHERE id = ?");
             getByIdStatement = connection.prepareStatement("SELECT * FROM bookmark WHERE id = ?");
 
-            findLastBookmarkInBookStatement = connection.prepareStatement(
-                    "SELECT * FROM bookmark WHERE bookId = ? ORDER BY date DESC LIMIT 1"
-            );
+        findLastBookmarkInBookStatement = connection.prepareStatement(
+            "SELECT * FROM bookmark WHERE book_id = ? ORDER BY date DESC LIMIT 1"
+        );
 
-            findLastPageInBookStatement = connection.prepareStatement(
-                    "SELECT page FROM bookmark WHERE bookId = ? ORDER BY date DESC LIMIT 1"
-            );
+        findLastPageInBookStatement = connection.prepareStatement(
+            "SELECT page FROM bookmark WHERE book_id = ? ORDER BY date DESC LIMIT 1"
+        );
 
-            deleteAllPreviousBookmarksStatement = connection.prepareStatement(
-                    "DELETE FROM bookmark WHERE bookId = ? AND id NOT IN (" +
-                            "SELECT id FROM bookmark WHERE bookId = ? ORDER BY date DESC LIMIT 1)"
-            );
-            findAllBookmarksInBookStatement = connection.prepareStatement("SELECT * FROM bookmark WHERE bookId = ? ORDER BY date DESC");
+        deleteAllPreviousBookmarksStatement = connection.prepareStatement(
+            "DELETE FROM bookmark WHERE book_id = ? AND id NOT IN (" +
+                "SELECT id FROM bookmark WHERE book_id = ? ORDER BY page DESC LIMIT 1)"
+        );
+        findAllBookmarksInBookStatement = connection.prepareStatement("SELECT * FROM bookmark WHERE book_id = ? ORDER BY date DESC");
         } catch (SQLException e) {
             IO.printError("Exception while preparing statements: " + e.getMessage());
+            throw new RuntimeException("Failed to prepare BookmarkDBRepository statements", e);
         }
     }
 
@@ -64,7 +65,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             }
         } catch (SQLException e) {
             IO.printError("Error finding last bookmark in book " + bookId + ": " + e.getMessage());
-            return null;
+            throw new RuntimeException("Failed to find last bookmark in book " + bookId, e);
         }
     }
 
@@ -80,7 +81,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             }
         } catch (SQLException e) {
             IO.printError("Error finding last page in book " + bookId + ": " + e.getMessage());
-            return 0;
+            throw new RuntimeException("Failed to find last page in book " + bookId, e);
         }
     }
 
@@ -93,7 +94,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             return 0;
         } catch (SQLException e) {
             IO.printError("Error finding last read book ID: " + e.getMessage());
-            return 0;
+            throw new RuntimeException("Failed to find last read book id", e);
         }
     }
 
@@ -107,7 +108,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             return bookIds;
         } catch (SQLException e) {
             IO.printError("Error finding all started book IDs: " + e.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to find all started book ids", e);
         }
     }
 
@@ -120,7 +121,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             }
         } catch (SQLException e) {
             IO.printError("Error finding all bookmarks in book " + bookId + ": " + e.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to find all bookmarks in book " + bookId, e);
         }
     }
 
@@ -132,6 +133,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             deleteAllPreviousBookmarksStatement.executeUpdate();
         } catch (SQLException e) {
             IO.printError("Error deleting previous bookmarks for book " + bookId + ": " + e.getMessage());
+            throw new RuntimeException("Failed to delete previous bookmarks for book " + bookId, e);
         }
     }
 
@@ -161,6 +163,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             createStatement.executeUpdate();
         } catch (SQLException e) {
             IO.printError("Error creating bookmark: " + e.getMessage());
+            throw new RuntimeException("Failed to create bookmark", e);
         }
     }
 
@@ -170,6 +173,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             statement.executeUpdate("DELETE FROM bookmark");
         } catch (SQLException e) {
             IO.printError("Error deleting all bookmarks: " + e.getMessage());
+            throw new RuntimeException("Failed to delete all bookmarks", e);
         }
     }
 
@@ -183,6 +187,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             }
         } catch (SQLException e) {
             IO.printError("Error deleting bookmark by ID " + id + ": " + e.getMessage());
+            throw new RuntimeException("Failed to delete bookmark by id " + id, e);
         }
     }
 
@@ -199,6 +204,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             }
         } catch (SQLException e) {
             IO.printError("Error updating bookmark " + id + ": " + e.getMessage());
+            throw new RuntimeException("Failed to update bookmark " + id, e);
         }
     }
 
@@ -215,7 +221,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             }
         } catch (SQLException e) {
             IO.printError("Error getting bookmark by ID " + id + ": " + e.getMessage());
-            return null;
+            throw new RuntimeException("Failed to get bookmark by id " + id, e);
         }
     }
 
@@ -225,7 +231,7 @@ public class BookmarkDBRepository implements BookmarkRepository {
             return extractBookmark(result);
         } catch (SQLException e) {
             IO.printError("Error getting all bookmarks: " + e.getMessage());
-            return List.of();
+            throw new RuntimeException("Failed to get all bookmarks", e);
         }
     }
 
@@ -233,15 +239,18 @@ public class BookmarkDBRepository implements BookmarkRepository {
         List<Bookmark> bookmarkList = new ArrayList<>();
         try {
             while (result.next()) {
-                bookmarkList.add(new Bookmark(
-                        result.getLong("id"),
-                        result.getLong("bookId"),
-                        result.getInt("page"),
-                        result.getDate("date").toLocalDate()
-                ));
+        java.sql.Date sqlDate = result.getDate("date");
+        java.time.LocalDate localDate = sqlDate == null ? null : sqlDate.toLocalDate();
+        bookmarkList.add(new Bookmark(
+            result.getLong("id"),
+            result.getLong("book_id"),
+            result.getInt("page"),
+            localDate
+        ));
             }
         } catch (SQLException e) {
             IO.printError("Exception while extracting bookmarks: " + e.getMessage());
+            throw new RuntimeException("Failed to extract bookmarks", e);
         }
         return bookmarkList;
     }

@@ -16,18 +16,22 @@ public class GetAllBookmarksCommand implements Command{
 
     @Override
     public void execute() {
-        List<Bookmark> bms = BookmarkServiceImpl.getInstance().getAll();
-        if (bms.isEmpty()) {
-            IO.print("No bookmarks found");
-            return;
+        try {
+            List<Bookmark> bms = BookmarkServiceImpl.getInstance().getAll();
+            if (bms.isEmpty()) {
+                IO.print("No bookmarks found");
+                return;
+            }
+            bms.forEach(bm -> {
+                IO.print("%d. book: %d, %d page, %s".formatted(
+                        bm.getId(),
+                        bm.getBookId(),
+                        bm.getPage(),
+                        bm.getDate().toString()
+                ));
+            });
+        } catch (RuntimeException e) {
+            IO.printError("Failed to get bookmarks: " + e.getMessage());
         }
-        bms.forEach(bm -> {
-            IO.print("%d. book: %d, %d page, %s".formatted(
-                    bm.getId(),
-                    bm.getBookId(),
-                    bm.getPage(),
-                    bm.getDate().toString()
-            ));
-        });
     }
 }
