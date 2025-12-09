@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Online Library</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; background: #f7f7f7; }
+        h1 { margin-bottom: 8px; }
+        section { background: #fff; padding: 16px; margin-bottom: 16px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+        label { display: block; margin: 6px 0 2px; }
+        input { padding: 6px; width: 280px; }
+        button { padding: 8px 14px; margin-top: 8px; cursor: pointer; }
+        pre { background: #111; color: #e6e6e6; padding: 12px; border-radius: 6px; overflow-x: auto; }
+        .row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .row input { width: 180px; }
+        .message { margin-top: 8px; color: #0a6; }
+        .error { color: #c00; }
+    </style>
+</head>
+<body>
+<h1>Online Library</h1>
+<p>Простой веб-интерфейс для работы с книгами и закладками. API живет на относительных путях <code>/api/books</code> и <code>/api/bookmarks</code>.</p>
+
+<section>
+    <h2>Книги</h2>
+    <div class="row">
+        <div>
+            <h3>Создать книгу</h3>
+            <label>Название</label>
+            <input id="book-name" placeholder="Title" />
+            <label>Путь (файл/ссылка)</label>
+            <input id="book-path" placeholder="/books/file.pdf" />
+            <button id="btn-create-book">Создать</button>
+            <div id="msg-book" class="message"></div>
+        </div>
+        <div>
+            <h3>Удалить книгу</h3>
+            <label>ID книги</label>
+            <input id="book-delete-id" type="number" min="1" />
+            <button id="btn-delete-book">Удалить</button>
+            <div id="msg-book-del" class="message"></div>
+        </div>
+    </div>
+    <div style="margin-top:12px;">
+        <button id="btn-load-books">Загрузить все книги</button>
+    </div>
+    <pre id="books-output">[]</pre>
+</section>
+
+<section>
+    <h2>Закладки</h2>
+    <div class="row">
+        <div>
+            <h3>Создать закладку</h3>
+            <label>ID книги</label>
+            <input id="bm-book-id" type="number" min="1" />
+            <label>Страница</label>
+            <input id="bm-page" type="number" min="0" />
+            <button id="btn-create-bm">Создать</button>
+            <div id="msg-bm" class="message"></div>
+        </div>
+        <div>
+            <h3>Закладки книги</h3>
+            <label>ID книги</label>
+            <input id="bm-load-book-id" type="number" min="1" />
+            <button id="btn-load-bm">Загрузить</button>
+            <div id="msg-bm-load" class="message"></div>
+        </div>
+    </div>
+    <div style="margin-top:12px;">
+        <label>ID закладки для удаления/получения</label>
+        <input id="bm-id" type="number" min="1" />
+        <button id="btn-get-bm">Показать</button>
+        <button id="btn-del-bm">Удалить</button>
+    </div>
+    <pre id="bm-output">[]</pre>
+</section>
+
+<script>
+const api = {
+    books: '/api/books',
+    bookmarks: '/api/bookmarks'
+};
+
+function setMessage(el, text, isError = false) {
+    el.textContent = text;
+    el.className = isError ? 'message error' : 'message';
+}
+
+async function jsonFetch(url, options = {}) {
+    const resp = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
+    const text = await resp.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+    if (!resp.ok) throw new Error(data?.message || resp.statusText);
+    return data;
+}
+
+// Books
+const bookName = document.getElementById('book-name');
+const bookPath = document.getElementById('book-path');
+const msgBook = document.getElementById('msg-book');
+const msgBookDel = document.getElementById('msg-book-del');
+const booksOutput = document.getElementById('books-output');
+const bookDeleteId = document.getElementById('book-delete-id');
+
+document.getElementById('btn-create-book').onclick = async () => {
+    setMessage(msgBook, '');
+    try {
+        await jsonFetch(api.books, { method: 'POST', body: JSON.stringify({ name: bookName.value, path: bookPath.value }) });
+        setMessage(msgBook, 'Книга создана');
+    } catch (e) { setMessage(msgBook, e.message, true); }
+};
+
+document.getElementById('btn-load-books').onclick = async () => {
+    try {
+        const res = await jsonFetch(api.books);
+        booksOutput.textContent = JSON.stringify(res.data, null, 2);
+    } catch (e) { booksOutput.textContent = 'Ошибка: ' + e.message; }
+};
+
+document.getElementById('btn-delete-book').onclick = async () => {
+    setMessage(msgBookDel, '');
+    const id = bookDeleteId.value;
+    if (!id) return setMessage(msgBookDel, 'Укажите ID', true);
+    try {
+        await jsonFetch(`${api.books}/${id}`, { method: 'DELETE' });
+        setMessage(msgBookDel, 'Книга удалена');
+    } catch (e) { setMessage(msgBookDel, e.message, true); }
+};
+
+// Bookmarks
+const bmBookId = document.getElementById('bm-book-id');
+const bmPage = document.getElementById('bm-page');
+const bmLoadBookId = document.getElementById('bm-load-book-id');
+const bmId = document.getElementById('bm-id');
+const bmOutput = document.getElementById('bm-output');
+const msgBm = document.getElementById('msg-bm');
+const msgBmLoad = document.getElementById('msg-bm-load');
+
+document.getElementById('btn-create-bm').onclick = async () => {
+    setMessage(msgBm, '');
+    try {
+        await jsonFetch(api.bookmarks, { method: 'POST', body: JSON.stringify({ bookId: Number(bmBookId.value), page: Number(bmPage.value) }) });
+        setMessage(msgBm, 'Закладка создана');
+    } catch (e) { setMessage(msgBm, e.message, true); }
+};
+
+document.getElementById('btn-load-bm').onclick = async () => {
+    const id = bmLoadBookId.value;
+    if (!id) return setMessage(msgBmLoad, 'Укажите ID книги', true);
+    setMessage(msgBmLoad, '');
+    try {
+        const res = await jsonFetch(`${api.bookmarks}?bookId=${id}`);
+        bmOutput.textContent = JSON.stringify(res.data, null, 2);
+    } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
+};
+
+document.getElementById('btn-get-bm').onclick = async () => {
+    const id = bmId.value;
+    if (!id) return setMessage(msgBmLoad, 'Укажите ID закладки', true);
+    try {
+        const res = await jsonFetch(`${api.bookmarks}/${id}`);
+        bmOutput.textContent = JSON.stringify(res.data, null, 2);
+    } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
+};
+
+document.getElementById('btn-del-bm').onclick = async () => {
+    const id = bmId.value;
+    if (!id) return setMessage(msgBmLoad, 'Укажите ID закладки', true);
+    try {
+        await jsonFetch(`${api.bookmarks}/${id}`, { method: 'DELETE' });
+        bmOutput.textContent = 'Закладка удалена';
+    } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
+};
+</script>
+</body>
+</html>

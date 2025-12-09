@@ -7,7 +7,7 @@ import org.example.IO.IO;
 import org.example.entities.Bookmark;
 
 import java.sql.*;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,9 +156,10 @@ public class BookmarkDBRepository implements BookmarkRepository {
     @Override
     public void create(Bookmark object) {
         try {
+            LocalDate date = object.getDate() == null ? LocalDate.now() : object.getDate();
             createStatement.setLong(1, object.getBookId());
             createStatement.setInt(2, object.getPage());
-            createStatement.setDate(3, Date.valueOf(object.getDate()));
+            createStatement.setDate(3, Date.valueOf(date));
             createStatement.executeUpdate();
         } catch (SQLException e) {
             IO.printError("Error creating bookmark: " + e.getMessage());
@@ -193,9 +194,10 @@ public class BookmarkDBRepository implements BookmarkRepository {
     @Override
     public void update(long id, Bookmark newObject) {
         try {
+            LocalDate date = newObject.getDate() == null ? LocalDate.now() : newObject.getDate();
             updateStatement.setLong(1, newObject.getBookId());
             updateStatement.setInt(2, newObject.getPage());
-            updateStatement.setDate(3, Date.valueOf(newObject.getDate()));
+            updateStatement.setDate(3, Date.valueOf(date));
             updateStatement.setLong(4, id);
             int updatedRows = updateStatement.executeUpdate();
             if (updatedRows == 0) {

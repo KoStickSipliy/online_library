@@ -4,11 +4,14 @@ C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_cours
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\DeleteAllPreviousBookmarksCommand.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\repository\BookRepository.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\service\Service.java
+C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\web\ApiResponse.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\Menu.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\repository\BookmarkInMemoryRepository.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\CreateBookmarkCommand.java
+C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\servlets\BookmarkServlet.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\service\BookmarkServiceImpl.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\ExitCommand.java
+C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\web\LocalDateAdapter.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\CreateBookCommand.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\Exception\NoEntityException.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\IO\IO.java
@@ -17,7 +20,9 @@ C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_cours
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\entities\Bookmark.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\Command.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\service\BookService.java
+C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\WebServer.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\entities\Book.java
+C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\servlets\Servlet.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\repository\BookmarkRepository.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\DeleteBookmarkCommand.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\service\BookServiceImpl.java
@@ -26,6 +31,7 @@ C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_cours
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\service\BookmarkService.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\utils\Autoincrement.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\utils\DateUtils.java
+C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\servlets\BookServlet.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\repository\BookInMemoryRepository.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\Main.java
 C:\Users\linar\Desktop\_Костяцкая папка\__YЧЁБА\Java_3rd_course\online_lib\online_library\src\main\java\org\example\cli\FindLastPageCommand.java
