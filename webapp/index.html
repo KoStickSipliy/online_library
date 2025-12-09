@@ -87,13 +87,11 @@ function setMessage(el, text, isError = false) {
     el.className = isError ? 'message error' : 'message';
 }
 
-async function jsonFetch(url, options = {}) {
-    const resp = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
+async function textFetch(url, options = {}) {
+    const resp = await fetch(url, options);
     const text = await resp.text();
-    let data;
-    try { data = JSON.parse(text); } catch { data = { raw: text }; }
-    if (!resp.ok) throw new Error(data?.message || resp.statusText);
-    return data;
+    if (!resp.ok) throw new Error(text || resp.statusText);
+    return text;
 }
 
 // Books
@@ -107,15 +105,16 @@ const bookDeleteId = document.getElementById('book-delete-id');
 document.getElementById('btn-create-book').onclick = async () => {
     setMessage(msgBook, '');
     try {
-        await jsonFetch(api.books, { method: 'POST', body: JSON.stringify({ name: bookName.value, path: bookPath.value }) });
+        const body = new URLSearchParams({ name: bookName.value, path: bookPath.value });
+        await textFetch(api.books, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
         setMessage(msgBook, 'Книга создана');
     } catch (e) { setMessage(msgBook, e.message, true); }
 };
 
 document.getElementById('btn-load-books').onclick = async () => {
     try {
-        const res = await jsonFetch(api.books);
-        booksOutput.textContent = JSON.stringify(res.data, null, 2);
+        const res = await textFetch(api.books);
+        booksOutput.textContent = res || '(пусто)';
     } catch (e) { booksOutput.textContent = 'Ошибка: ' + e.message; }
 };
 
@@ -124,7 +123,7 @@ document.getElementById('btn-delete-book').onclick = async () => {
     const id = bookDeleteId.value;
     if (!id) return setMessage(msgBookDel, 'Укажите ID', true);
     try {
-        await jsonFetch(`${api.books}/${id}`, { method: 'DELETE' });
+        await textFetch(`${api.books}/${id}`, { method: 'DELETE' });
         setMessage(msgBookDel, 'Книга удалена');
     } catch (e) { setMessage(msgBookDel, e.message, true); }
 };
@@ -141,7 +140,8 @@ const msgBmLoad = document.getElementById('msg-bm-load');
 document.getElementById('btn-create-bm').onclick = async () => {
     setMessage(msgBm, '');
     try {
-        await jsonFetch(api.bookmarks, { method: 'POST', body: JSON.stringify({ bookId: Number(bmBookId.value), page: Number(bmPage.value) }) });
+        const body = new URLSearchParams({ bookId: bmBookId.value, page: bmPage.value });
+        await textFetch(api.bookmarks, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
         setMessage(msgBm, 'Закладка создана');
     } catch (e) { setMessage(msgBm, e.message, true); }
 };
@@ -151,8 +151,8 @@ document.getElementById('btn-load-bm').onclick = async () => {
     if (!id) return setMessage(msgBmLoad, 'Укажите ID книги', true);
     setMessage(msgBmLoad, '');
     try {
-        const res = await jsonFetch(`${api.bookmarks}?bookId=${id}`);
-        bmOutput.textContent = JSON.stringify(res.data, null, 2);
+        const res = await textFetch(`${api.bookmarks}?bookId=${id}`);
+        bmOutput.textContent = res || '(пусто)';
     } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
 };
 
@@ -160,8 +160,8 @@ document.getElementById('btn-get-bm').onclick = async () => {
     const id = bmId.value;
     if (!id) return setMessage(msgBmLoad, 'Укажите ID закладки', true);
     try {
-        const res = await jsonFetch(`${api.bookmarks}/${id}`);
-        bmOutput.textContent = JSON.stringify(res.data, null, 2);
+        const res = await textFetch(`${api.bookmarks}/${id}`);
+        bmOutput.textContent = res || '(пусто)';
     } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
 };
 
@@ -169,7 +169,7 @@ document.getElementById('btn-del-bm').onclick = async () => {
     const id = bmId.value;
     if (!id) return setMessage(msgBmLoad, 'Укажите ID закладки', true);
     try {
-        await jsonFetch(`${api.bookmarks}/${id}`, { method: 'DELETE' });
+        await textFetch(`${api.bookmarks}/${id}`, { method: 'DELETE' });
         bmOutput.textContent = 'Закладка удалена';
     } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
 };

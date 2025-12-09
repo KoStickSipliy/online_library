@@ -11,7 +11,6 @@ org\example\DBManager\PostgreSQLManager.class
 org\example\Main.class
 org\example\utils\DateUtils.class
 org\example\servlets\BookmarkServlet.class
-org\example\web\ApiResponse.class
 org\example\repository\Repository.class
 org\example\service\BookService.class
 org\example\cli\CreateBookmarkCommand.class

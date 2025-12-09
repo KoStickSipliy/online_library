@@ -1,7 +1,5 @@
 package org.example.servlets;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,9 +9,10 @@ import org.example.entities.Book;
 import org.example.entities.Bookmark;
 import org.example.service.BookmarkServiceImpl;
 import org.example.service.BookServiceImpl;
-import org.example.web.ApiResponse;
+import org.example.utils.DateUtils;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -21,13 +20,12 @@ import java.util.List;
  */
 @WebServlet("/api/bookmarks/*")
 public class BookmarkServlet extends HttpServlet {
-    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private final BookmarkServiceImpl bookmarkService = (BookmarkServiceImpl) BookmarkServiceImpl.getInstance();
     private final BookServiceImpl bookService = (BookServiceImpl) BookServiceImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
+        resp.setContentType("text/plain");
         resp.setCharacterEncoding("UTF-8");
 
         String pathInfo = req.getPathInfo();
@@ -38,7 +36,7 @@ public class BookmarkServlet extends HttpServlet {
                 // GET /api/bookmarks?bookId={id} - получить все закладки для книги
                 if (bookIdParam == null || bookIdParam.isBlank()) {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("bookId parameter is required")));
+                    resp.getWriter().write("bookId parameter is required");
                     return;
                 }
 
@@ -46,124 +44,140 @@ public class BookmarkServlet extends HttpServlet {
                 Book book = bookService.getById(bookId);
                 if (book == null) {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Book not found")));
+                    resp.getWriter().write("Book not found");
                     return;
                 }
 
                 List<Bookmark> bookmarks = bookmarkService.findAllBookmarksInBook(book);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.success(bookmarks, "Bookmarks retrieved successfully")));
+                StringBuilder sb = new StringBuilder();
+                for (Bookmark bm : bookmarks) {
+                    sb.append("id=").append(bm.getId())
+                            .append(", bookId=").append(bm.getBookId())
+                            .append(", page=").append(bm.getPage())
+                            .append(", date=").append(bm.getDate() == null ? "" : bm.getDate().format(DateUtils.formatter))
+                            .append("\n");
+                }
+                resp.getWriter().write(sb.toString());
             } else if (pathInfo.startsWith("/")) {
                 // GET /api/bookmarks/{id} - получить закладку по ID
                 long id = Long.parseLong(pathInfo.substring(1));
                 Bookmark bookmark = bookmarkService.getById(id);
                 if (bookmark != null) {
-                    resp.getWriter().write(mapper.writeValueAsString(ApiResponse.success(bookmark, "Bookmark retrieved successfully")));
+                    resp.getWriter().write("id=" + bookmark.getId() + ", bookId=" + bookmark.getBookId() + ", page=" + bookmark.getPage() + ", date=" + (bookmark.getDate() == null ? "" : bookmark.getDate().format(DateUtils.formatter)));
                 } else {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Bookmark not found")));
+                    resp.getWriter().write("Bookmark not found");
                 }
             }
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Invalid ID format")));
+            resp.getWriter().write("Invalid ID format");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Error: " + e.getMessage())));
+            resp.getWriter().write("Error: " + e.getMessage());
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
+        resp.setContentType("text/plain");
         resp.setCharacterEncoding("UTF-8");
 
         try {
-            Bookmark bookmark = mapper.readValue(req.getInputStream(), Bookmark.class);
+            long bookId = Long.parseLong(req.getParameter("bookId"));
+            int page = Integer.parseInt(req.getParameter("page"));
+            String dateStr = req.getParameter("date");
+            LocalDate date = (dateStr == null || dateStr.isBlank()) ? LocalDate.now() : LocalDate.parse(dateStr, DateUtils.formatter);
+            Bookmark bookmark = new Bookmark(bookId, page, date);
 
             // Валидация
-            if (bookmark == null || bookmark.getBookId() <= 0) {
+            if (bookmark.getBookId() <= 0) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Valid bookId is required")));
+                resp.getWriter().write("Valid bookId is required");
                 return;
             }
 
             if (bookmark.getPage() < 0) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("page cannot be negative")));
+                resp.getWriter().write("page cannot be negative");
                 return;
             }
 
             bookmarkService.create(bookmark);
             resp.setStatus(HttpServletResponse.SC_CREATED);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.success("Bookmark created successfully")));
+            resp.getWriter().write("Bookmark created successfully");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Error creating bookmark: " + e.getMessage())));
+            resp.getWriter().write("Error creating bookmark: " + e.getMessage());
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
+        resp.setContentType("text/plain");
         resp.setCharacterEncoding("UTF-8");
 
         try {
             String pathInfo = req.getPathInfo();
             if (pathInfo == null || pathInfo.equals("/")) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Bookmark ID required")));
+                resp.getWriter().write("Bookmark ID required");
                 return;
             }
 
             long id = Long.parseLong(pathInfo.substring(1));
-            Bookmark bookmark = mapper.readValue(req.getInputStream(), Bookmark.class);
+            long bookId = Long.parseLong(req.getParameter("bookId"));
+            int page = Integer.parseInt(req.getParameter("page"));
+            String dateStr = req.getParameter("date");
+            LocalDate date = (dateStr == null || dateStr.isBlank()) ? LocalDate.now() : LocalDate.parse(dateStr, DateUtils.formatter);
+            Bookmark bookmark = new Bookmark(bookId, page, date);
 
             // Валидация
-            if (bookmark == null || bookmark.getBookId() <= 0) {
+            if (bookmark.getBookId() <= 0) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Valid bookId is required")));
+                resp.getWriter().write("Valid bookId is required");
                 return;
             }
 
             if (bookmark.getPage() < 0) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("page cannot be negative")));
+                resp.getWriter().write("page cannot be negative");
                 return;
             }
 
             bookmarkService.update(id, bookmark);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.success("Bookmark updated successfully")));
+            resp.getWriter().write("Bookmark updated successfully");
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Invalid bookmark ID format")));
+            resp.getWriter().write("Invalid bookmark ID format");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Error updating bookmark: " + e.getMessage())));
+            resp.getWriter().write("Error updating bookmark: " + e.getMessage());
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
+        resp.setContentType("text/plain");
         resp.setCharacterEncoding("UTF-8");
 
         try {
             String pathInfo = req.getPathInfo();
             if (pathInfo == null || pathInfo.equals("/")) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Bookmark ID required")));
+                resp.getWriter().write("Bookmark ID required");
                 return;
             }
 
             long id = Long.parseLong(pathInfo.substring(1));
             bookmarkService.deleteById(id);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.success("Bookmark deleted successfully")));
+            resp.getWriter().write("Bookmark deleted successfully");
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Invalid bookmark ID format")));
+            resp.getWriter().write("Invalid bookmark ID format");
         } catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write(mapper.writeValueAsString(ApiResponse.error("Error deleting bookmark: " + e.getMessage())));
+            resp.getWriter().write("Error deleting bookmark: " + e.getMessage());
         }
     }
 }
