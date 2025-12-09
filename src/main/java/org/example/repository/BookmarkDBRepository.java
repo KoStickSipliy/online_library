@@ -9,7 +9,6 @@ import org.example.entities.Bookmark;
 import java.sql.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class BookmarkDBRepository implements BookmarkRepository {
@@ -37,11 +36,11 @@ public class BookmarkDBRepository implements BookmarkRepository {
             getByIdStatement = connection.prepareStatement("SELECT * FROM bookmark WHERE id = ?");
 
         findLastBookmarkInBookStatement = connection.prepareStatement(
-            "SELECT * FROM bookmark WHERE book_id = ? ORDER BY date DESC LIMIT 1"
+            "SELECT * FROM bookmark WHERE book_id = ? ORDER BY page DESC LIMIT 1"
         );
 
         findLastPageInBookStatement = connection.prepareStatement(
-            "SELECT page FROM bookmark WHERE book_id = ? ORDER BY date DESC LIMIT 1"
+            "SELECT page FROM bookmark WHERE book_id = ? ORDER BY page DESC LIMIT 1"
         );
 
         deleteAllPreviousBookmarksStatement = connection.prepareStatement(

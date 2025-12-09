@@ -2,7 +2,6 @@
 
 package org.example.entities;
 
-import lombok.Builder;
 import lombok.Data;
 
 //пример сущности

@@ -24,12 +24,7 @@ public class PostgreSQLManager {
             String user = rb.getString("DATABASE_USER");
             String password = rb.getString("DATABASE_PASSWORD");
 
-            IO.print("connecting to " + url +". User:" + user);
-
             connection = DriverManager.getConnection(url, user, password);
-
-            IO.print("CONNECTION SUCCESS");
-
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS book (" +
