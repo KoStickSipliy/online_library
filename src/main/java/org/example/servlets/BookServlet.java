@@ -11,9 +11,7 @@ import org.example.service.BookServiceImpl;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Сервлет для управления книгами
- */
+
 @WebServlet("/api/books/*")
 public class BookServlet extends HttpServlet {
     private final BookServiceImpl bookService = (BookServiceImpl) BookServiceImpl.getInstance();

@@ -33,31 +33,41 @@ public class BookmarkServlet extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.equals("/")) {
-                // GET /api/bookmarks?bookId={id} - получить все закладки для книги
+                // GET /api/bookmarks - получить все закладки
+                // GET /api/bookmarks?bookId={id} - получить все закладки для конкретной книги
                 if (bookIdParam == null || bookIdParam.isBlank()) {
-                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    resp.getWriter().write("bookId parameter is required");
-                    return;
-                }
+                    // Получить все закладки
+                    List<Bookmark> allBookmarks = bookmarkService.getAll();
+                    StringBuilder sb = new StringBuilder();
+                    for (Bookmark bm : allBookmarks) {
+                        sb.append("id=").append(bm.getId())
+                                .append(", bookId=").append(bm.getBookId())
+                                .append(", page=").append(bm.getPage())
+                                .append(", date=").append(bm.getDate() == null ? "" : bm.getDate().format(DateUtils.formatter))
+                                .append("\n");
+                    }
+                    resp.getWriter().write(sb.toString());
+                } else {
+                    // Получить закладки для конкретной книги
+                    long bookId = Long.parseLong(bookIdParam);
+                    Book book = bookService.getById(bookId);
+                    if (book == null) {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        resp.getWriter().write("Book not found");
+                        return;
+                    }
 
-                long bookId = Long.parseLong(bookIdParam);
-                Book book = bookService.getById(bookId);
-                if (book == null) {
-                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    resp.getWriter().write("Book not found");
-                    return;
+                    List<Bookmark> bookmarks = bookmarkService.findAllBookmarksInBook(book);
+                    StringBuilder sb = new StringBuilder();
+                    for (Bookmark bm : bookmarks) {
+                        sb.append("id=").append(bm.getId())
+                                .append(", bookId=").append(bm.getBookId())
+                                .append(", page=").append(bm.getPage())
+                                .append(", date=").append(bm.getDate() == null ? "" : bm.getDate().format(DateUtils.formatter))
+                                .append("\n");
+                    }
+                    resp.getWriter().write(sb.toString());
                 }
-
-                List<Bookmark> bookmarks = bookmarkService.findAllBookmarksInBook(book);
-                StringBuilder sb = new StringBuilder();
-                for (Bookmark bm : bookmarks) {
-                    sb.append("id=").append(bm.getId())
-                            .append(", bookId=").append(bm.getBookId())
-                            .append(", page=").append(bm.getPage())
-                            .append(", date=").append(bm.getDate() == null ? "" : bm.getDate().format(DateUtils.formatter))
-                            .append("\n");
-                }
-                resp.getWriter().write(sb.toString());
             } else if (pathInfo.startsWith("/")) {
                 // GET /api/bookmarks/{id} - получить закладку по ID
                 long id = Long.parseLong(pathInfo.substring(1));

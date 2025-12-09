@@ -19,7 +19,7 @@
 </head>
 <body>
 <h1>Online Library</h1>
-<p>Простой веб-интерфейс для работы с книгами и закладками. API живет на относительных путях <code>/api/books</code> и <code>/api/bookmarks</code>.</p>
+<!--<p>Простой веб-интерфейс для работы с книгами и закладками. API живет на относительных путях <code>/api/books</code> и <code>/api/bookmarks</code>.</p>-->
 
 <section>
     <h2>Книги</h2>
@@ -32,6 +32,17 @@
             <input id="book-path" placeholder="/books/file.pdf" />
             <button id="btn-create-book">Создать</button>
             <div id="msg-book" class="message"></div>
+        </div>
+        <div>
+            <h3>Изменить книгу</h3>
+            <label>ID книги</label>
+            <input id="book-edit-id" type="number" min="1" />
+            <label>Название</label>
+            <input id="book-edit-name" placeholder="Title" />
+            <label>Путь</label>
+            <input id="book-edit-path" placeholder="/books/file.pdf" />
+            <button id="btn-edit-book">Изменить</button>
+            <div id="msg-book-edit" class="message"></div>
         </div>
         <div>
             <h3>Удалить книгу</h3>
@@ -60,6 +71,17 @@
             <div id="msg-bm" class="message"></div>
         </div>
         <div>
+            <h3>Изменить закладку</h3>
+            <label>ID закладки</label>
+            <input id="bm-edit-id" type="number" min="1" />
+            <label>ID книги</label>
+            <input id="bm-edit-book-id" type="number" min="1" />
+            <label>Страница</label>
+            <input id="bm-edit-page" type="number" min="0" />
+            <button id="btn-edit-bm">Изменить</button>
+            <div id="msg-bm-edit" class="message"></div>
+        </div>
+        <div>
             <h3>Закладки книги</h3>
             <label>ID книги</label>
             <input id="bm-load-book-id" type="number" min="1" />
@@ -68,10 +90,8 @@
         </div>
     </div>
     <div style="margin-top:12px;">
-        <label>ID закладки для удаления/получения</label>
-        <input id="bm-id" type="number" min="1" />
-        <button id="btn-get-bm">Показать</button>
-        <button id="btn-del-bm">Удалить</button>
+        <button id="btn-load-bm-all">Загрузить все закладки</button>
+        <!-- <button id="btn-load-books">Загрузить все книги</button> -->
     </div>
     <pre id="bm-output">[]</pre>
 </section>
@@ -99,8 +119,12 @@ const bookName = document.getElementById('book-name');
 const bookPath = document.getElementById('book-path');
 const msgBook = document.getElementById('msg-book');
 const msgBookDel = document.getElementById('msg-book-del');
+const msgBookEdit = document.getElementById('msg-book-edit');
 const booksOutput = document.getElementById('books-output');
 const bookDeleteId = document.getElementById('book-delete-id');
+const bookEditId = document.getElementById('book-edit-id');
+const bookEditName = document.getElementById('book-edit-name');
+const bookEditPath = document.getElementById('book-edit-path');
 
 document.getElementById('btn-create-book').onclick = async () => {
     setMessage(msgBook, '');
@@ -108,7 +132,23 @@ document.getElementById('btn-create-book').onclick = async () => {
         const body = new URLSearchParams({ name: bookName.value, path: bookPath.value });
         await textFetch(api.books, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
         setMessage(msgBook, 'Книга создана');
+        bookName.value = '';
+        bookPath.value = '';
     } catch (e) { setMessage(msgBook, e.message, true); }
+};
+
+document.getElementById('btn-edit-book').onclick = async () => {
+    setMessage(msgBookEdit, '');
+    const id = bookEditId.value;
+    if (!id) return setMessage(msgBookEdit, 'Укажите ID', true);
+    try {
+        const body = new URLSearchParams({ name: bookEditName.value, path: bookEditPath.value });
+        await textFetch(`${api.books}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+        setMessage(msgBookEdit, 'Книга изменена');
+        bookEditId.value = '';
+        bookEditName.value = '';
+        bookEditPath.value = '';
+    } catch (e) { setMessage(msgBookEdit, e.message, true); }
 };
 
 document.getElementById('btn-load-books').onclick = async () => {
@@ -125,6 +165,7 @@ document.getElementById('btn-delete-book').onclick = async () => {
     try {
         await textFetch(`${api.books}/${id}`, { method: 'DELETE' });
         setMessage(msgBookDel, 'Книга удалена');
+        bookDeleteId.value = '';
     } catch (e) { setMessage(msgBookDel, e.message, true); }
 };
 
@@ -136,6 +177,10 @@ const bmId = document.getElementById('bm-id');
 const bmOutput = document.getElementById('bm-output');
 const msgBm = document.getElementById('msg-bm');
 const msgBmLoad = document.getElementById('msg-bm-load');
+const msgBmEdit = document.getElementById('msg-bm-edit');
+const bmEditId = document.getElementById('bm-edit-id');
+const bmEditBookId = document.getElementById('bm-edit-book-id');
+const bmEditPage = document.getElementById('bm-edit-page');
 
 document.getElementById('btn-create-bm').onclick = async () => {
     setMessage(msgBm, '');
@@ -143,7 +188,30 @@ document.getElementById('btn-create-bm').onclick = async () => {
         const body = new URLSearchParams({ bookId: bmBookId.value, page: bmPage.value });
         await textFetch(api.bookmarks, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
         setMessage(msgBm, 'Закладка создана');
+        bmBookId.value = '';
+        bmPage.value = '';
     } catch (e) { setMessage(msgBm, e.message, true); }
+};
+
+document.getElementById('btn-edit-bm').onclick = async () => {
+    setMessage(msgBmEdit, '');
+    const id = bmEditId.value;
+    if (!id) return setMessage(msgBmEdit, 'Укажите ID закладки', true);
+    try {
+        const body = new URLSearchParams({ bookId: bmEditBookId.value, page: bmEditPage.value });
+        await textFetch(`${api.bookmarks}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+        setMessage(msgBmEdit, 'Закладка изменена');
+        bmEditId.value = '';
+        bmEditBookId.value = '';
+        bmEditPage.value = '';
+    } catch (e) { setMessage(msgBmEdit, e.message, true); }
+};
+
+document.getElementById('btn-load-bm-all').onclick = async () => {
+    try {
+        const res = await textFetch(api.bookmarks);
+        bmOutput.textContent = res || '(пусто)';
+    } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
 };
 
 document.getElementById('btn-load-bm').onclick = async () => {
@@ -171,6 +239,7 @@ document.getElementById('btn-del-bm').onclick = async () => {
     try {
         await textFetch(`${api.bookmarks}/${id}`, { method: 'DELETE' });
         bmOutput.textContent = 'Закладка удалена';
+        bmId.value = '';
     } catch (e) { bmOutput.textContent = 'Ошибка: ' + e.message; }
 };
 </script>
